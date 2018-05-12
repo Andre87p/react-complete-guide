@@ -15,9 +15,7 @@ const orderSummary = (props) => {
         <Fragment>
             <h3>Your order</h3>
             <p>A delicious burger with the following ingredients:</p>
-            <ul>
-                {ingredientSummary}
-            </ul>
+            <ul>{ingredientSummary}</ul>
             <p>
                 <strong>Total price: </strong>
                 {props.price.toFixed(2)}
