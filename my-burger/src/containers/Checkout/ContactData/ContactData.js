@@ -147,7 +147,6 @@ class ContactData extends Component {
 		for (let inputIdentifier in updatedOrderForm) {
 			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
 		}
-
 		this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 	}
 
@@ -181,7 +180,7 @@ class ContactData extends Component {
 								/>
 							))
 						}
-						<Button type="Success" disabled={!this.props.formIsValid}>ORDER</Button>
+						<Button type="Success" disabled={!this.state.formIsValid}>ORDER</Button>
 					</form>
 				</div>
 		);
