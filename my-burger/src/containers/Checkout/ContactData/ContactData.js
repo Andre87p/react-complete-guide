@@ -15,7 +15,12 @@ class ContactData extends Component {
 					type: 'text',
 					placeholder: 'Your name'
 				},
-				value: ''
+				value: '',
+				validation: {
+					required: true
+				},
+				valid: false,
+				touched: false
 			},
 
 			street: {
@@ -24,7 +29,12 @@ class ContactData extends Component {
 					type: 'text',
 					placeholder: 'Street'
 				},
-				value: ''
+				value: '',
+				validation: {
+					required: true
+				},
+				valid: false,
+				touched: false
 			},
 
 			zipCode: {
@@ -33,7 +43,14 @@ class ContactData extends Component {
 					type: 'text',
 					placeholder: 'ZIP Code'
 				},
-				value: ''
+				value: '',
+				validation: {
+					required: true,
+					minLength: 5,
+					maxLength: 5
+				},
+				valid: false,
+				touched: false
 			},
 
 			country: {
@@ -42,7 +59,12 @@ class ContactData extends Component {
 					type: 'text',
 					placeholder: 'Country'
 				},
-				value: ''
+				value: '',
+				validation: {
+					required: true
+				},
+				valid: false,
+				touched: false
 			},
 
 			email: {
@@ -51,7 +73,12 @@ class ContactData extends Component {
 					type: 'email',
 					placeholder: 'Your E-Mail'
 				},
-				value: ''
+				value: '',
+				validation: {
+					required: true
+				},
+				valid: false,
+				touched: false
 			},
 
 			deliveryMethod: {
@@ -62,9 +89,12 @@ class ContactData extends Component {
 						{ value: 'cheapest', displayValue: 'Cheapest' }
 					]
 				},
-				value: ''
+				value: 'fastest',
+				validation: {},
+				valid: true
 			}
 		},
+		formIsValid: false,
 		loading: false
 	};
 
@@ -72,9 +102,16 @@ class ContactData extends Component {
 		event.preventDefault();
 
 		this.setState({ loading: true });
+
+		const formData = {};
+		for (let formElementIdentifier in this.state.orderForm) {
+			formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+		}
+
 		const order = {
 			ingredients: this.props.ingredients,
 			price: this.props.price,
+			orderData: formData
 		};
 		axios
 			.post('/orders.json', order)
@@ -83,6 +120,35 @@ class ContactData extends Component {
 				this.props.history.push('/');
 			})
 			.catch(error => this.setState({ loading: false }));
+	}
+
+	checkValidity(value, rules) {
+		return (
+			(rules.required ? value.trim() !== '' : true) &&
+			(rules.minLength ? value.length >= rules.minLength : true) &&
+			(rules.maxLength ? value.length <= rules.minLength : true)
+		);
+	}
+
+	inputChangedHandler = (event, inputIdentifier) => {
+		const updatedOrderForm = {
+			...this.state.orderForm
+		};
+		const updatedFormElement = {
+			...updatedOrderForm[inputIdentifier]
+		};
+		updatedFormElement.value = event.target.value;
+
+		updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+		updatedFormElement.touched = true;
+		updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+		let formIsValid = true;
+		for (let inputIdentifier in updatedOrderForm) {
+			formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+		}
+
+		this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
 	}
 
 	render() {
@@ -100,7 +166,7 @@ class ContactData extends Component {
 				:
 				<div className={classes.ContactData}>
 					<h4>Enter your contact data</h4>
-					<form className={classes.Form}>
+					<form className={classes.Form} onSubmit={this.orderHandler}>
 						{
 							formElementsArray.map(formElement => (
 								<Input
@@ -108,13 +174,14 @@ class ContactData extends Component {
 									elementType={formElement.config.elementType}
 									elementConfig={formElement.config.elementConfig}
 									value={formElement.config.value}
+									invalid={!formElement.config.valid}
+									shouldValidate={formElement.config.validation}
+									touched={formElement.config.touched}
+									changed={(event) => { this.inputChangedHandler(event, formElement.id) }}
 								/>
 							))
 						}
-						<Button
-							type="Success"
-							clicked={this.orderHandler}
-						>ORDER</Button>
+						<Button type="Success" disabled={!this.props.formIsValid}>ORDER</Button>
 					</form>
 				</div>
 		);
