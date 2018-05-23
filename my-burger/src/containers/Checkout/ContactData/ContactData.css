@@ -7,16 +7,16 @@
 	padding: 10px;
 	box-sizing: border-box;
 }
-
+/* 
 .Form {
 	margin: 0 auto;
     width: 130px;
-}
+} */
 
-.Input {
+/* .Input {
 	display: block;
 	text-align: center;
-}
+} */
 
 @media (min-width: 600px) {
 	.ContactData {
