@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
+import * as actionTypes from '../../store/actions';
 
 class Counter extends Component {
     state = {
@@ -11,6 +12,8 @@ class Counter extends Component {
     }
 
     render() {
+        console.log(this.props);
+
         return (
             <div>
                 <CounterOutput value={this.props.ctr} />
@@ -21,12 +24,12 @@ class Counter extends Component {
                 <hr />
                 <button onClick={this.props.onStoreResult}>Store Result</button>
                 <ul>
-                    {this.props.storedResults.map(strResult => {
+                    {this.props.storedResults.map(strResult => (
                         <li
                             key={strResult.id}
-                            onClick={this.props.onDeleteResult}
+                            onClick={() => this.props.onDeleteResult(strResult.id)}
                         >{strResult.value}</li>
-                    })}
+                    ))}
                 </ul>
             </div>
         );
@@ -42,12 +45,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIncrementCounter: () => dispatch({ type: 'INCREMENT' }),
-        onDecrementCounter: () => dispatch({ type: 'DECREMENT' }),
-        onAddCounter: () => dispatch({ type: 'ADD', value: 5 }),
-        onSubtractCounter: () => dispatch({ type: 'SUBTRACT', value: 5 }),
-        onStoreResult: () => dispatch({ type: 'STORE_RESULT' }),
-        onDeleteResult: () => dispatch({ type: 'DELETE_RESULT' })
+        onIncrementCounter: () => dispatch({ type: actionTypes.INCREMENT }),
+        onDecrementCounter: () => dispatch({ type: actionTypes.DECREMENT }),
+        onAddCounter: () => dispatch({ type: actionTypes.ADD, value: 5 }),
+        onSubtractCounter: () => dispatch({ type: actionTypes.SUBTRACT, value: 5 }),
+        onStoreResult: () => dispatch({ type: actionTypes.STORE_RESULT }),
+        onDeleteResult: (id) => dispatch({ type: actionTypes.DELETE_RESULT, id: id })
     };
 };
 

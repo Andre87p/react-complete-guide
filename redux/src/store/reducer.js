@@ -1,24 +1,47 @@
+import * as actionTypes from './actions';
+
 const initialState = {
 	counter: 0,
 	results: []
 };
 
 const reducer = (state = initialState, action) => {
-	const options = {
-		INCREMENT: { counter: state.counter + 1 },
-		DECREMENT: { counter: state.counter - 1 },
-		ADD: { counter: state.counter + action.value },
-		SUBTRACT: { counter: state.counter - action.value },
-		STORE_RESULT: {
-			results: state.results.concat({
-				id: new Date,
-				value: state.counter,
-			})
-		}
-	};
+	let optionType = null;
+	switch (action.type) {
 
-	const optionType = options[action.type];
-	return typeof optionType !== 'undefined' ?
+		case actionTypes.INCREMENT:
+			optionType = { counter: state.counter + 1 };
+			break;
+
+		case actionTypes.DECREMENT:
+			optionType = { counter: state.counter - 1 };
+			break;
+
+		case actionTypes.ADD:
+			optionType = { counter: state.counter + action.value };
+			break;
+
+		case actionTypes.SUBTRACT:
+			optionType = { counter: state.counter - action.value };
+			break;
+
+		case actionTypes.STORE_RESULT:
+			optionType = {
+				results: state.results.concat({
+					id: new Date(),
+					value: state.counter,
+				})
+			};
+			break;
+
+		case actionTypes.DELETE_RESULT:
+			optionType = {
+				results: state.results.filter(result => result.id !== action.id)
+			};
+			break;
+	}
+
+	return optionType !== null ?
 		{ ...state, ...optionType }
 		:
 		state;
