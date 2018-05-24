@@ -1,14 +1,13 @@
-import * as actionTypes from './actions';
+import * as actionTypes from '../actions';
 
 const initialState = {
-	counter: 0,
-	results: []
+	counter: 0
 };
 
 const reducer = (state = initialState, action) => {
 	let optionType = null;
-	switch (action.type) {
 
+	switch (action.type) {
 		case actionTypes.INCREMENT:
 			optionType = { counter: state.counter + 1 };
 			break;
@@ -25,24 +24,12 @@ const reducer = (state = initialState, action) => {
 			optionType = { counter: state.counter - action.value };
 			break;
 
-		case actionTypes.STORE_RESULT:
-			optionType = {
-				results: state.results.concat({
-					id: new Date(),
-					value: state.counter,
-				})
-			};
-			break;
-
-		case actionTypes.DELETE_RESULT:
-			optionType = {
-				results: state.results.filter(result => result.id !== action.id)
-			};
+		default:
 			break;
 	}
 
 	return optionType !== null ?
-		{ ...state, ...optionType }
+		{ ...optionType }
 		:
 		state;
 }
