@@ -12,18 +12,16 @@ import * as actionTypes from '../../store/actions';
 
 class BurgerBuilder extends Component {
     state = {
-        totalPrice: 4,
         purchaseable: false,
         purchasing: false,
         loading: false
     };
 
-    updatePurchaseState = (ingredients) => {
-        const sum = Object.keys(ingredients)
-            .map(igKey => ingredients[igKey])
+    updatePurchaseState = () => {
+        const sum = Object.keys(this.props.ings)
+            .map(igKey => this.props.ings[igKey])
             .reduce((sum, el) => sum + el, 0);
-
-        this.setState({ purchaseable: sum > 0 });
+        return sum > 0;
     }
 
     purchaseHandler = (value) => {
@@ -31,17 +29,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        const queryParams = [];
-        for (let i in this.state.ingredients) {
-            queryParams.push(`${encodeURIComponent(i)}=${encodeURIComponent(this.state.ingredients[i])}`);
-        }
-        queryParams.push(`price=${this.state.totalPrice}`);
-        const queryString = queryParams.join('&');
-
-        this.props.history.push({
-            pathname: '/checkout',
-            search: `?${queryString}`
-        });
+        this.props.history.push('/checkout');
     }
 
     render() {
@@ -65,7 +53,7 @@ class BurgerBuilder extends Component {
                                     ingredients={this.props.ings}
                                     purchaseCanceled={() => this.purchaseHandler(false)}
                                     purchaseContinued={this.purchaseContinueHandler}
-                                    price={this.state.totalPrice}
+                                    price={this.props.price}
                                 />
                         }
                     </Modal>
@@ -76,9 +64,9 @@ class BurgerBuilder extends Component {
                         ingredientAdded={this.props.onIngredientAdded}
                         ingredientRemoved={this.props.onIngredientRemoved}
                         disabled={disabledInfo}
-                        purchaseable={this.state.purchaseable}
+                        purchaseable={this.updatePurchaseState()}
                         ordered={() => this.purchaseHandler(true)}
-                        price={this.state.totalPrice}
+                        price={this.props.price}
                     />
                 </Fragment>
                 :
@@ -89,14 +77,19 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients
+        ings: state.ingredients,
+        price: state.totalPrice
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingName) => dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
-        onIngredientRemoved: (ingName) => dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName })
+        onIngredientAdded: (ingName) => dispatch(
+            { type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }
+        ),
+        onIngredientRemoved: (ingName) => dispatch(
+            { type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName }
+        )
     };
 };
 
