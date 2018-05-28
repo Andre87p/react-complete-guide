@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from '../Checkout/ContactData/ContactData';
-import * as actionTypes from '../../store/actions';
 
 class Checkout extends Component {
 	checkoutCancelledHandler = () => {
@@ -37,8 +36,7 @@ class Checkout extends Component {
 
 const mapStateToProps = state => {
 	return {
-		ings: state.ingredients,
-		price: state.totalPrice
+		ings: state.ingredients
 	};
 };
 
