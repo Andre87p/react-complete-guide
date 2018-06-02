@@ -55,7 +55,7 @@ const purchaseBurgerFail = (error) => (
 const fetchOrdersSuccess = (orders) => (
 	{
 		type: actionTypes.FETCH_ORDERS_SUCCESS,
-		orders: orders
+		orders: order
 	}
 );
 const fetchOrdersStart = () => ({ type: actionTypes.FETCH_ORDERS_START });
