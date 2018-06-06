@@ -8,6 +8,8 @@ import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/WithErrorHandler/WithErrorHandler';
 import * as actions from '../../../store/actions/index';
+import { checkValidity } from '../../../helpers/validation';
+
 
 class ContactData extends Component {
 	state = {
@@ -111,18 +113,11 @@ class ContactData extends Component {
 		const order = {
 			ingredients: this.props.ings,
 			price: this.props.price,
-			orderData: formData
+			orderData: formData,
+			userId: this.props.userId
 		};
 
-		this.props.onOrderBurger(order);
-	}
-
-	checkValidity(value, rules) {
-		return (
-			(rules.required ? value.trim() !== '' : true) &&
-			(rules.minLength ? value.length >= rules.minLength : true) &&
-			(rules.maxLength ? value.length <= rules.minLength : true)
-		);
+		this.props.onOrderBurger(order, this.props.token);
 	}
 
 	inputChangedHandler = (event, inputIdentifier) => {
@@ -134,7 +129,7 @@ class ContactData extends Component {
 		};
 		updatedFormElement.value = event.target.value;
 
-		updatedFormElement.valid = this.checkValidity(
+		updatedFormElement.valid = checkValidity(
 			updatedFormElement.value,
 			updatedFormElement.validation
 		);
@@ -189,13 +184,15 @@ const mapStateToProps = state => {
 	return {
 		ings: state.burgerBuilder.ingredients,
 		price: state.burgerBuilder.totalPrice,
-		loading: state.order.loading
+		loading: state.order.loading,
+		token: state.auth.token,
+		userId: state.auth.userId
 	};
 };
 
 const dispatchToProps = dispatch => {
 	return {
-		onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+		onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
 	};
 };
 
