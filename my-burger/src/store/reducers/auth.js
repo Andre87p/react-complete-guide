@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
 export default reducer;
 
 
-const authStart = (state, action) => updateObject(state, { error: null, loading: true });
+const authStart = (state) => updateObject(state, { error: null, loading: true });
 
 const authSuccess = (state, action) => updateObject(state,
 	{
@@ -41,7 +41,7 @@ const authFail = (state, action) => updateObject(state,
 		loading: false
 	}
 );
-const authLogout = (state, action) => updateObject(state, { token: null, userId: null });
+const authLogout = (state) => updateObject(state, { token: null, userId: null });
 
 const setAuthRedirectPath = (state, action) => updateObject(state,
 	{ authRedirectPath: action.path }
